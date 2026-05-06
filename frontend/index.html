@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="discover">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura — Feel what you need</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/modes.css">
+</head>
+<body data-mode="discover">
+
+  <!-- Ambient particle canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- AI thinking indicator -->
+  <div id="ai-thinking" class="ai-thinking" aria-live="polite">
+    <div class="ai-thinking__orb"></div>
+    <span class="ai-thinking__text">Reading your intent</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════════════════ -->
+  <nav id="main-nav" class="nav" role="navigation">
+    <button class="nav__logo" id="nav-logo" aria-label="Go home">
+      <span class="nav__logo-mark">◉</span>
+      <span class="nav__logo-text">aura</span>
+    </button>
+
+    <div class="nav__center">
+      <div class="mode-switcher" id="mode-switcher" role="group" aria-label="Interface mode">
+        <button class="mode-btn mode-btn--active" data-mode="discover" aria-pressed="true">
+          <span class="mode-btn__icon">✦</span>
+          <span class="mode-btn__label">Discover</span>
+        </button>
+        <button class="mode-btn" data-mode="classic" aria-pressed="false">
+          <span class="mode-btn__icon">⊡</span>
+          <span class="mode-btn__label">Classic</span>
+        </button>
+        <button class="mode-btn" data-mode="focus" aria-pressed="false">
+          <span class="mode-btn__icon">○</span>
+          <span class="mode-btn__label">Focus</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav__actions">
+      <!-- Font size toggle -->
+      <button class="nav__action nav__font-btn" id="font-size-toggle" title="Increase font size" aria-label="Cycle font size">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <text x="3" y="17" font-size="11" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="700">A</text>
+          <text x="13" y="20" font-size="9" fill="currentColor" stroke="none" font-family="sans-serif">A</text>
+        </svg>
+        <span class="font-size-label" id="font-size-label">A</span>
+      </button>
+
+      <!-- Wishlist -->
+      <button class="nav__action nav__wishlist-btn" id="wishlist-btn" title="Your wishlist" aria-label="Open wishlist">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span class="wishlist-badge" id="wishlist-count" aria-label="0 items in wishlist">0</span>
+      </button>
+
+      <button class="nav__action" id="contrast-toggle" title="Toggle high contrast" aria-label="Toggle high contrast">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a10 10 0 0 1 0 20V2z" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <button class="nav__action nav__voice-btn" id="voice-btn" title="Voice search" aria-label="Open voice search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        <span class="voice-pulse" aria-hidden="true"></span>
+      </button>
+
+      <button class="nav__action nav__cart-btn" id="cart-btn" title="Your cart" aria-label="Open cart">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="cart-badge" id="cart-count" aria-label="0 items in cart">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       VIEW 1 — ENTRY: Mood Selection
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="view-entry" class="view view--active" data-view="entry" aria-label="Mood selection">
+    <div class="entry__headline">
+      <p class="entry__eyebrow">Good to see you</p>
+      <h1 class="entry__title">What are you <em>feeling</em> today?</h1>
+      <p class="entry__subtitle">Your experience adapts to your mood</p>
+    </div>
+
+    <div id="mood-map" class="mood-map" role="list" aria-label="Select a mood">
+      <!-- Mood orbs injected by mood.js -->
+    </div>
+
+    <div class="entry__footer">
+      <span class="entry__or">or</span>
+      <button class="entry__voice-shortcut" id="entry-voice-btn" aria-label="Use voice to describe your mood">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        </svg>
+        Tell me how you feel
+      </button>
+      <span class="entry__or">or</span>
+      <button class="entry__catalog-btn" id="entry-catalog-btn" aria-label="Browse all products in classic catalog">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        Browse all products
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       VIEW — CATALOG: Classic product grid
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="view-catalog" class="view" data-view="catalog" aria-label="Product catalog">
+    <div class="catalog-shell">
+
+      <!-- Catalog header -->
+      <div class="catalog-head">
+        <div class="catalog-head__top">
+          <button class="back-btn" id="back-catalog-to-entry" aria-label="Back to home">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Home
+          </button>
+          <div class="catalog-head__title-wrap">
+            <h2 class="catalog-head__title">All Products</h2>
+            <span class="catalog-head__count" id="catalog-count">12 items</span>
+          </div>
+          <!-- Search bar -->
+          <div class="catalog-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="catalog-search-input" placeholder="Search products…" aria-label="Search products">
+          </div>
+        </div>
+
+        <!-- Filters + sort row -->
+        <div class="catalog-filters-row">
+          <div class="catalog-filters" id="catalog-filters" role="group" aria-label="Filter by category">
+            <button class="catalog-filter active" data-cat="all">All</button>
+            <button class="catalog-filter" data-cat="Wellness">Wellness</button>
+            <button class="catalog-filter" data-cat="Skincare">Skincare</button>
+            <button class="catalog-filter" data-cat="Focus">Focus</button>
+            <button class="catalog-filter" data-cat="Productivity">Productivity</button>
+            <button class="catalog-filter" data-cat="Comfort">Comfort</button>
+            <button class="catalog-filter" data-cat="Home">Home</button>
+            <button class="catalog-filter" data-cat="Gifting">Gifting</button>
+          </div>
+          <select class="catalog-sort" id="catalog-sort" aria-label="Sort products">
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="reviews">Most Reviewed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      <div class="catalog-grid" id="catalog-grid" role="list" aria-label="Product catalog grid"></div>
+
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       VIEW 2 — EXPLORE: Product Discovery
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="view-explore" class="view" data-view="explore" aria-label="Product exploration">
+    <div class="explore__header">
+      <div class="explore__nav-row">
+        <button class="back-btn" id="back-to-entry" aria-label="Back to mood selection">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Moods
+        </button>
+
+      </div>
+
+      <div class="explore__context">
+        <div class="explore__mood-tag" id="current-mood-tag">Slow Sunday</div>
+        <h2 class="explore__title" id="explore-title">Curated for your energy</h2>
+        <p class="explore__ai-note" id="explore-ai-note">
+          <span class="ai-dot">✦</span>
+          <span id="explore-ai-note-text">AI found items that match your vibe</span>
+        </p>
+      </div>
+    </div>
+
+    <div id="product-grid" class="product-grid" role="list" aria-label="Products">
+      <!-- Product cards injected by app.js -->
+    </div>
+
+    <div class="explore__footer">
+      <button class="load-more-btn" id="load-more-btn" aria-label="Load more products">
+        Discover more
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       VIEW 3 — PRODUCT DETAIL
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="view-product" class="view" data-view="product" aria-label="Product detail">
+    <div class="product-detail">
+      <button class="back-btn" id="back-to-explore" aria-label="Back to products">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+
+      <div class="product-detail__layout">
+
+        <!-- Left column: visual + trust signals -->
+        <div class="product-detail__left">
+          <div class="product-detail__visual" id="detail-visual">
+            <div class="detail-gradient" id="detail-gradient"></div>
+            <div class="detail-badge-wrap" id="detail-product-badge"></div>
+
+            <!-- AI hints overlay (ambient, non-intrusive) -->
+            <div class="ai-hints-layer" id="detail-ai-hints" aria-live="polite">
+              <div class="ai-hint ai-hint--mood" id="hint-mood"></div>
+              <div class="ai-hint ai-hint--gift" id="hint-gift"></div>
+              <div class="ai-hint ai-hint--behavior" id="hint-behavior"></div>
+            </div>
+          </div>
+
+          <!-- Social proof strip -->
+          <div class="social-proof" id="social-proof">
+            <div class="social-proof__avatars">
+              <div class="avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div>
+              <div class="avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">M</div>
+              <div class="avatar" style="background:linear-gradient(135deg,#11998e,#38ef7d)">A</div>
+              <div class="avatar" style="background:linear-gradient(135deg,#f7971e,#ffd200)">T</div>
+            </div>
+            <span class="social-proof__text" id="social-proof-text"></span>
+          </div>
+        </div>
+
+        <!-- Right column: info + actions -->
+        <div class="product-detail__right">
+          <div class="detail-category" id="detail-category"></div>
+          <h1 class="detail-name" id="detail-name"></h1>
+          <p class="detail-tagline" id="detail-tagline"></p>
+
+          <div class="detail-meta">
+            <div class="detail-stars" id="detail-stars"></div>
+            <span class="detail-reviews" id="detail-reviews"></span>
+          </div>
+
+          <div class="detail-pricing">
+            <span class="detail-price" id="detail-price"></span>
+            <span class="detail-original" id="detail-original"></span>
+            <span class="detail-savings" id="detail-savings"></span>
+          </div>
+
+          <!-- AI Review Summary card -->
+          <div class="ai-review-card" id="ai-review-card">
+            <div class="ai-review-card__header">
+              <span class="ai-icon">✦</span>
+              <span>AI Review Summary</span>
+              <span class="ai-review-card__verified">verified reviews</span>
+            </div>
+            <p class="ai-review-card__insight" id="review-insight"></p>
+            <div class="ai-review-card__cols">
+              <div class="review-col review-col--pros">
+                <h4>What people love</h4>
+                <ul id="pros-list"></ul>
+              </div>
+              <div class="review-col review-col--cons">
+                <h4>Worth knowing</h4>
+                <ul id="cons-list"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="detail-actions">
+            <button class="btn-primary" id="detail-add-cart">Add to cart</button>
+            <button class="btn-secondary btn-pickup" id="detail-pickup-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              Pick up in store
+            </button>
+          </div>
+
+          <div class="budget-note" id="budget-note">
+            <span class="ai-icon">✦</span> Fits within most monthly wellness budgets
+          </div>
+        </div>
+      </div>
+
+      <!-- Complementary products -->
+      <div class="complementary" id="complementary-section">
+        <div class="complementary__header">
+          <span class="ai-icon">✦</span>
+          <h3>People who loved this also chose</h3>
+        </div>
+        <div class="complementary__grid" id="complementary-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       VIEW — WISHLIST PAGE
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="view-wishlist" class="view" data-view="wishlist" aria-label="Your wishlist">
+    <div class="wishlist-page">
+      <div class="wishlist-page__head">
+        <button class="back-btn" id="back-wishlist" aria-label="Back">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back
+        </button>
+        <div class="wishlist-page__title-group">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--c-peach)" stroke="var(--c-peach)" stroke-width="1.5" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <h2 class="wishlist-page__title">Your Wishlist</h2>
+          <span class="wishlist-page__count" id="wishlist-page-count"></span>
+        </div>
+      </div>
+
+      <div class="wishlist-view-empty" id="wishlist-view-empty">
+        <div class="wishlist-view-empty__icon">♡</div>
+        <p>Nothing saved yet</p>
+        <span>Tap the heart on any product to save it here</span>
+        <button class="btn-primary wishlist-view-empty__cta" id="wishlist-go-explore">Explore products</button>
+      </div>
+
+      <div class="wishlist-grid" id="wishlist-grid" role="list"></div>
+
+      <div class="wishlist-view-foot" id="wishlist-view-foot" hidden>
+        <div class="wishlist-view-foot__inner">
+          <div class="wishlist-ai-prompts__label">
+            <span class="ai-icon">✦</span> Ask AI about your wishlist
+          </div>
+          <div class="wishlist-ai-chips">
+            <button class="wishlist-ai-chip" data-prompt="Which of my wishlist items should I buy first?">Which should I buy first?</button>
+            <button class="wishlist-ai-chip" data-prompt="Which wishlist item gives the best value for money?">Best value?</button>
+            <button class="wishlist-ai-chip" data-prompt="Which of my saved items is best as a gift?">Best as a gift?</button>
+            <button class="wishlist-ai-chip" data-prompt="Compare all my wishlist items for me">Compare them all</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       OVERLAY — VOICE SEARCH
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="voice-overlay" class="overlay voice-overlay" role="dialog" aria-modal="true" aria-label="Voice search" hidden>
+    <button class="overlay-close" id="voice-close" aria-label="Close voice search">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="voice-overlay__body">
+      <div class="voice-header">
+        <p class="voice-prompt" id="voice-prompt">Tap to start speaking</p>
+        <p class="voice-hint" id="voice-hint">Say something like "I need something cozy" or "Find a gift for a friend"</p>
+      </div>
+
+      <div class="voice-visual" id="voice-visual">
+        <!-- Mic button -->
+        <button class="voice-mic" id="voice-mic-btn" aria-label="Start listening">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+
+        <!-- Waveform bars (animated when listening) -->
+        <div class="waveform" id="waveform" aria-hidden="true">
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+        </div>
+
+        <!-- Pulse rings -->
+        <div class="pulse-rings" aria-hidden="true">
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring"></div>
+        </div>
+      </div>
+
+      <!-- Real-time transcription -->
+      <div class="voice-transcript" id="voice-transcript" aria-live="polite">
+        <span id="transcript-text"></span><span class="blink-cursor">|</span>
+      </div>
+
+      <!-- AI interpretation line -->
+      <div class="voice-interpretation" id="voice-interpretation" aria-live="polite">
+        <span class="ai-icon">✦</span>
+        <span id="interpretation-text"></span>
+      </div>
+
+      <!-- Quick suggestion chips -->
+      <div class="voice-suggestions">
+        <p class="voice-suggestions__label">Try saying:</p>
+        <div class="voice-chips">
+          <button class="voice-chip" data-query="I need a treat">I need a treat</button>
+          <button class="voice-chip" data-query="Something cozy please">Something cozy</button>
+          <button class="voice-chip" data-query="Find me a gift for a friend">Gift for a friend</button>
+          <button class="voice-chip" data-query="I can't focus today help me">Help me focus</button>
+          <button class="voice-chip" data-query="I need a fresh start">Fresh start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODAL — AI COMPARISON
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="compare-modal" class="overlay compare-modal" role="dialog" aria-modal="true" aria-label="AI product comparison" hidden>
+    <button class="overlay-close" id="compare-close" aria-label="Close comparison">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="compare-modal__body">
+      <div class="compare-header">
+        <span class="ai-pill">✦ AI Analysis</span>
+        <h2>What should you choose?</h2>
+        <p>Comparing <span id="compare-count">2</span> items</p>
+      </div>
+
+      <!-- Products grid -->
+      <div class="compare-products" id="compare-products"></div>
+
+      <!-- AI Verdict section -->
+      <div class="ai-verdict" id="ai-verdict">
+        <div class="ai-verdict__thinking" id="verdict-thinking">
+          <div class="thinking-dot"></div>
+          <div class="thinking-dot"></div>
+          <div class="thinking-dot"></div>
+          <span>Analyzing your choices</span>
+        </div>
+        <div class="ai-verdict__results" id="verdict-results" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PANEL — SMART CART
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div class="cart-panel__head">
+      <h3>Your cart</h3>
+      <button class="cart-panel__close" id="cart-close" aria-label="Close cart">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cart-panel__body" id="cart-body">
+      <!-- Empty state -->
+      <div class="cart-empty" id="cart-empty">
+        <div class="cart-empty__icon">◉</div>
+        <p>Your cart is waiting</p>
+        <span>Explore a mood to find something you'll love</span>
+      </div>
+
+      <!-- Cart items list -->
+      <div class="cart-items" id="cart-items"></div>
+
+      <!-- Budget indicator -->
+      <div class="cart-budget" id="cart-budget" hidden>
+        <div class="cart-budget__row">
+          <span>Budget fit</span>
+          <span id="cart-total-label">$0</span>
+        </div>
+        <div class="cart-budget__track">
+          <div class="cart-budget__fill" id="budget-fill"></div>
+        </div>
+        <p class="cart-budget__note" id="budget-note-cart">Well within the average Aura order</p>
+      </div>
+
+      <!-- AI-suggested additions -->
+      <div class="cart-suggestions" id="cart-suggestions" hidden>
+        <div class="cart-suggestions__head">
+          <span class="ai-icon">✦</span> These go well together
+        </div>
+        <div class="cart-suggestions__list" id="cart-suggestion-list"></div>
+      </div>
+    </div>
+
+    <div class="cart-panel__foot">
+      <div class="cart-subtotal-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">$0</span>
+      </div>
+      <button class="btn-primary btn-checkout" id="btn-checkout">Continue to checkout</button>
+      <button class="btn-secondary btn-store-checkout" id="btn-store-checkout">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Pick up in store
+      </button>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cart-backdrop"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODAL — STORE FINDER (O2O)
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="store-modal" class="overlay store-modal" role="dialog" aria-modal="true" aria-label="Find a nearby store" hidden>
+    <button class="overlay-close" id="store-close" aria-label="Close store finder">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="store-modal__body">
+      <div class="store-header">
+        <h2>Nearby Aura stores</h2>
+        <p>Pick up today — no wait, no shipping</p>
+      </div>
+
+      <!-- Abstract map -->
+      <div class="store-map" id="store-map">
+        <svg class="store-map__grid" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <pattern id="grid-pat" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(139,92,246,0.12)" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="400" height="220" fill="url(#grid-pat)"/>
+        </svg>
+        <div class="store-map__pins" id="store-map-pins"></div>
+      </div>
+
+      <!-- Store list -->
+      <div class="store-list" id="store-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FLOATING — Compare Popup (appears after ≥2 items selected)
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="compare-popup" class="compare-popup" aria-live="polite">
+    <div class="compare-popup__inner">
+      <div class="compare-popup__left">
+        <div class="compare-popup__previews" id="compare-popup-previews"></div>
+        <div class="compare-popup__info">
+          <strong><span id="compare-popup-count">2</span> items selected</strong>
+          <span class="compare-popup__sub">Ready for AI comparison</span>
+        </div>
+      </div>
+      <div class="compare-popup__actions">
+        <button class="compare-popup__cta" id="compare-popup-btn">
+          <span class="compare-popup__icon">✦</span>
+          Compare with AI
+        </button>
+        <button class="compare-popup__clear" id="compare-popup-clear">Clear ×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PANEL — AI CHAT
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="ai-chat-panel" class="ai-chat-panel" role="dialog" aria-modal="true" aria-label="AI Assistant">
+    <div class="ai-chat-panel__head">
+      <div class="ai-chat-panel__title">
+        <span class="ai-chat-panel__orb"></span>
+        AI Assistant
+      </div>
+      <div class="ai-chat-panel__head-actions">
+        <span class="ai-chat-panel__ctx" id="chat-context-label"></span>
+        <button class="ai-chat-panel__close" id="ai-chat-close" aria-label="Close AI chat">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="ai-chat-messages" id="ai-chat-messages">
+      <!-- Messages injected by chat.js -->
+    </div>
+
+    <div class="ai-chat-panel__suggestions" id="ai-chat-suggestions">
+      <!-- Context-aware suggestion chips -->
+    </div>
+
+    <div class="ai-chat-panel__input-row">
+      <input type="text" id="ai-chat-input" placeholder="Ask me anything about products…" autocomplete="off" aria-label="Message to AI">
+      <button class="ai-chat-panel__send" id="ai-chat-send" aria-label="Send message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="ai-chat-backdrop" id="ai-chat-backdrop"></div>
+
+  <!-- Floating Ask AI button -->
+  <button class="ask-ai-fab" id="ask-ai-fab" aria-label="Open AI Assistant">
+    <span class="ask-ai-fab__icon">✦</span>
+    <span class="ask-ai-fab__label">Ask AI</span>
+  </button>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/mood.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/ai-layer.js"></script>
+</body>
+</html>
