@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-mode="discover">
+<html lang="en" data-mode="discover" data-home="catalog">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/modes.css">
 </head>
-<body data-mode="discover">
+<body data-mode="discover" data-home="catalog">
 
   <!-- Ambient particle canvas -->
   <canvas id="particle-canvas"></canvas>
@@ -35,10 +35,6 @@
         <button class="mode-btn mode-btn--active" data-mode="discover" aria-pressed="true">
           <span class="mode-btn__icon">✦</span>
           <span class="mode-btn__label">Discover</span>
-        </button>
-        <button class="mode-btn" data-mode="classic" aria-pressed="false">
-          <span class="mode-btn__icon">⊡</span>
-          <span class="mode-btn__label">Classic</span>
         </button>
         <button class="mode-btn" data-mode="focus" aria-pressed="false">
           <span class="mode-btn__icon">○</span>
@@ -96,7 +92,15 @@
   <!-- ═══════════════════════════════════════════════════════════
        VIEW 1 — ENTRY: Mood Selection
   ═══════════════════════════════════════════════════════════ -->
-  <section id="view-entry" class="view view--active" data-view="entry" aria-label="Mood selection">
+  <section id="view-entry" class="view" data-view="entry" aria-label="Mood selection">
+    <div class="entry__back-row">
+      <button class="back-btn" id="back-entry-to-catalog" aria-label="Back to catalog">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        All products
+      </button>
+    </div>
     <div class="entry__headline">
       <p class="entry__eyebrow">Good to see you</p>
       <h1 class="entry__title">What are you <em>feeling</em> today?</h1>
@@ -130,20 +134,14 @@
   <!-- ═══════════════════════════════════════════════════════════
        VIEW — CATALOG: Classic product grid
   ═══════════════════════════════════════════════════════════ -->
-  <section id="view-catalog" class="view" data-view="catalog" aria-label="Product catalog">
+  <section id="view-catalog" class="view view--active" data-view="catalog" aria-label="Product catalog">
     <div class="catalog-shell">
 
       <!-- Catalog header -->
       <div class="catalog-head">
         <div class="catalog-head__top">
-          <button class="back-btn" id="back-catalog-to-entry" aria-label="Back to home">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Home
-          </button>
           <div class="catalog-head__title-wrap">
-            <h2 class="catalog-head__title">All Products</h2>
+            <h1 class="catalog-head__title">All Products</h1>
             <span class="catalog-head__count" id="catalog-count">12 items</span>
           </div>
           <!-- Search bar -->
@@ -153,6 +151,19 @@
             </svg>
             <input type="text" id="catalog-search-input" placeholder="Search products…" aria-label="Search products">
           </div>
+          <!-- Map / Store finder button -->
+          <button class="catalog-map-btn" id="catalog-map-btn" aria-label="Find nearby stores">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            Find in store
+          </button>
+          <!-- Mood discovery shortcut -->
+          <button class="catalog-mood-btn" id="catalog-mood-btn" aria-label="Discover products by mood">
+            <span class="catalog-mood-btn__icon">✦</span>
+            Discover by mood
+          </button>
         </div>
 
         <!-- Filters + sort row -->
@@ -636,6 +647,192 @@
     <span class="ask-ai-fab__label">Ask AI</span>
   </button>
 
+  <!-- ═══════════════════════════════════════════════════════════
+       VIEW — CHECKOUT
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="view-checkout" class="view" data-view="checkout" aria-label="Checkout">
+    <div class="checkout-shell">
+
+      <div class="checkout-steps" id="checkout-steps">
+        <div class="checkout-step checkout-step--active" data-step="1">
+          <span class="checkout-step__num">1</span>
+          <span class="checkout-step__label">Shipping</span>
+        </div>
+        <div class="checkout-step__line"></div>
+        <div class="checkout-step" data-step="2">
+          <span class="checkout-step__num">2</span>
+          <span class="checkout-step__label">Payment</span>
+        </div>
+        <div class="checkout-step__line"></div>
+        <div class="checkout-step" data-step="3">
+          <span class="checkout-step__num">3</span>
+          <span class="checkout-step__label">Confirm</span>
+        </div>
+      </div>
+
+      <div class="checkout-layout">
+        <div class="checkout-form-col">
+
+          <button class="back-btn" id="back-checkout" aria-label="Back to cart">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to cart
+          </button>
+
+          <!-- Step 1: Shipping -->
+          <div class="checkout-panel" id="checkout-panel-1">
+            <div class="checkout-panel__head">
+              <h2 class="checkout-panel__title">Shipping details</h2>
+              <p class="checkout-panel__sub">Where should we send your order?</p>
+            </div>
+            <div class="checkout-form">
+              <div class="checkout-row">
+                <div class="checkout-field"><label for="co-first">First name</label><input type="text" id="co-first" placeholder="Sofia" autocomplete="given-name"></div>
+                <div class="checkout-field"><label for="co-last">Last name</label><input type="text" id="co-last" placeholder="Trush" autocomplete="family-name"></div>
+              </div>
+              <div class="checkout-field"><label for="co-email">Email</label><input type="email" id="co-email" placeholder="you@example.com" autocomplete="email"></div>
+              <div class="checkout-field"><label for="co-phone">Phone</label><input type="tel" id="co-phone" placeholder="+380 xx xxx xxxx" autocomplete="tel"></div>
+              <div class="checkout-field"><label for="co-address">Address</label><input type="text" id="co-address" placeholder="Khreshchatyk St, 1" autocomplete="street-address"></div>
+              <div class="checkout-row">
+                <div class="checkout-field"><label for="co-city">City</label><input type="text" id="co-city" placeholder="Kyiv" autocomplete="address-level2"></div>
+                <div class="checkout-field"><label for="co-zip">Postal code</label><input type="text" id="co-zip" placeholder="01001" autocomplete="postal-code"></div>
+              </div>
+              <div class="checkout-delivery-opts" role="group" aria-label="Delivery method">
+                <label class="delivery-opt delivery-opt--active" id="del-opt-standard">
+                  <input type="radio" name="delivery" value="standard" checked hidden>
+                  <div class="delivery-opt__inner">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 4v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    <div><div class="delivery-opt__name">Standard delivery</div><div class="delivery-opt__info">3–5 business days · Free</div></div>
+                    <span class="delivery-opt__price">Free</span>
+                  </div>
+                </label>
+                <label class="delivery-opt" id="del-opt-express">
+                  <input type="radio" name="delivery" value="express" hidden>
+                  <div class="delivery-opt__inner">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <div><div class="delivery-opt__name">Express delivery</div><div class="delivery-opt__info">Next business day · +$9.99</div></div>
+                    <span class="delivery-opt__price">$9.99</span>
+                  </div>
+                </label>
+              </div>
+              <button type="button" class="checkout-next-btn" id="checkout-next-1">
+                Continue to payment
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Payment -->
+          <div class="checkout-panel checkout-panel--hidden" id="checkout-panel-2">
+            <div class="checkout-panel__head">
+              <h2 class="checkout-panel__title">Payment</h2>
+              <p class="checkout-panel__sub">Your data is encrypted and secure 🔒</p>
+            </div>
+            <div class="checkout-form">
+              <div class="pay-tabs" role="group" aria-label="Payment method">
+                <button type="button" class="pay-tab pay-tab--active" data-pay="card" id="pay-tab-card">💳 Card</button>
+                <button type="button" class="pay-tab" data-pay="apple" id="pay-tab-apple"> Apple Pay</button>
+                <button type="button" class="pay-tab" data-pay="paypal" id="pay-tab-paypal">PayPal</button>
+              </div>
+              <div id="pay-card-fields">
+                <div class="checkout-field">
+                  <label for="co-card">Card number</label>
+                  <div class="card-input-wrap">
+                    <input type="text" id="co-card" placeholder="1234 5678 9012 3456" maxlength="19">
+                    <span class="card-brand-icon" id="card-brand-icon">💳</span>
+                  </div>
+                </div>
+                <div class="checkout-row">
+                  <div class="checkout-field"><label for="co-expiry">Expiry</label><input type="text" id="co-expiry" placeholder="MM / YY" maxlength="7"></div>
+                  <div class="checkout-field"><label for="co-cvv">CVV</label><input type="text" id="co-cvv" placeholder="•••" maxlength="4"></div>
+                </div>
+                <div class="checkout-field"><label for="co-name-card">Name on card</label><input type="text" id="co-name-card" placeholder="SOFIA TRUSH"></div>
+              </div>
+              <div id="pay-alt-field" class="pay-alt-msg" hidden>
+                <div class="pay-alt-icon">✦</div>
+                <p>You'll be redirected to complete payment securely.</p>
+              </div>
+              <div class="promo-row">
+                <input type="text" id="co-promo" placeholder="Promo code" class="promo-input">
+                <button type="button" class="promo-apply-btn" id="promo-apply-btn">Apply</button>
+              </div>
+              <div class="promo-msg" id="promo-msg"></div>
+              <div class="checkout-nav-row">
+                <button type="button" class="checkout-back-step-btn" id="checkout-back-1">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  Back
+                </button>
+                <button type="button" class="checkout-next-btn" id="checkout-next-2">
+                  Review order
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Confirm -->
+          <div class="checkout-panel checkout-panel--hidden" id="checkout-panel-3">
+            <div class="checkout-panel__head">
+              <h2 class="checkout-panel__title">Review your order</h2>
+              <p class="checkout-panel__sub">Everything look good? Place your order below.</p>
+            </div>
+            <div class="confirm-summary" id="confirm-summary"></div>
+            <div class="confirm-guarantee">
+              <span class="ai-icon">✦</span>
+              Free returns 30 days · Encrypted payment · Aura guarantee
+            </div>
+            <div class="checkout-nav-row">
+              <button type="button" class="checkout-back-step-btn" id="checkout-back-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back
+              </button>
+              <button type="button" class="checkout-place-btn" id="checkout-place-btn">
+                <span class="checkout-place-btn__text">Place order</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Order Summary -->
+        <aside class="checkout-summary" id="checkout-summary-aside">
+          <div class="checkout-summary__head">
+            <h3>Order summary</h3>
+            <span class="checkout-summary__count" id="checkout-summary-count"></span>
+          </div>
+          <div class="checkout-summary__items" id="checkout-summary-items"></div>
+          <div class="checkout-summary__divider"></div>
+          <div class="checkout-summary__row"><span>Subtotal</span><span id="checkout-sub">$0</span></div>
+          <div class="checkout-summary__row"><span>Delivery</span><span id="checkout-delivery-cost">Free</span></div>
+          <div class="checkout-summary__row checkout-summary__row--promo" id="checkout-promo-row" hidden>
+            <span>Promo discount</span><span id="checkout-promo-val" class="checkout-promo-saving">–$0</span>
+          </div>
+          <div class="checkout-summary__divider"></div>
+          <div class="checkout-summary__row checkout-summary__row--total">
+            <span>Total</span><span id="checkout-total">$0</span>
+          </div>
+          <div class="checkout-summary__ai-note">
+            <span class="ai-icon">✦</span>
+            <span id="checkout-ai-note">Great picks — AI approved</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Success overlay -->
+    <div class="checkout-success" id="checkout-success" hidden>
+      <div class="checkout-success__inner">
+        <div class="checkout-success__ring">
+          <div class="checkout-success__check">✓</div>
+        </div>
+        <h2 class="checkout-success__title">Order placed! 🎉</h2>
+        <p class="checkout-success__sub">Thank you! A confirmation email is on its way.</p>
+        <div class="checkout-success__order-num" id="checkout-order-num"></div>
+        <button class="btn-primary checkout-success__cta" id="checkout-success-home">Continue shopping</button>
+      </div>
+    </div>
+  </section>
+
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script src="js/mood.js"></script>
@@ -644,5 +841,6 @@
   <script src="js/wishlist.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/ai-layer.js"></script>
+  <script src="js/checkout.js"></script>
 </body>
 </html>

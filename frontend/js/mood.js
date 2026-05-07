@@ -66,6 +66,17 @@ const MOODS = [
     pos:     { right: '28%', top: '12%' },
     float:   { dur: '8.2s', delay: '3.0s' },
   },
+  {
+    id:    'map',
+    label: 'Find nearby store',
+    emoji: '📍',
+    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #e94560 100%)',
+    glow:    'rgba(233,69,96,0.55)',
+    size:    148,
+    pos:     { left: '30%', bottom: '4%' },
+    float:   { dur: '6.5s', delay: '0.8s' },
+    action:  'store-map',  // special: opens map instead of explore
+  },
 ];
 
 let currentExpanding = null;
@@ -96,9 +107,15 @@ function buildOrb(mood) {
   el.innerHTML = `
     <span class="mood-orb__emoji">${mood.emoji}</span>
     <span class="mood-orb__label">${mood.label}</span>
+    ${mood.action === 'store-map' ? '<span class="mood-orb__map-ring"></span>' : ''}
   `;
 
-  el.addEventListener('click', () => onMoodSelect(mood, el));
+  if (mood.action === 'store-map') {
+    el.classList.add('mood-orb--map');
+    el.addEventListener('click', () => onMapOrbClick(mood, el));
+  } else {
+    el.addEventListener('click', () => onMoodSelect(mood, el));
+  }
   el.addEventListener('mouseenter', () => onMoodHover(mood, el, true));
   el.addEventListener('mouseleave', () => onMoodHover(mood, el, false));
 
@@ -155,6 +172,59 @@ function onMoodSelect(mood, el) {
       currentExpanding = null;
     }, 700);
   }, 500);
+}
+
+/* Map orb — pulses with glow, then opens store finder modal */
+function onMapOrbClick(mood, el) {
+  if (currentExpanding) return;
+
+  // Pulse burst animation
+  el.style.transition = 'transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.28s ease';
+  el.style.transform  = 'scale(1.14)';
+  el.style.boxShadow  = `0 0 70px ${mood.glow}, 0 0 140px ${mood.glow}`;
+
+  setTimeout(() => {
+    el.style.transform = '';
+    el.style.boxShadow = `0 8px 40px ${mood.glow}, inset 0 1px 0 rgba(255,255,255,0.2)`;
+
+    // Show AI thinking, then open modal
+    window.App?.showAIThinking('Finding stores near you\u2026');
+    setTimeout(() => {
+      window.App?.hideAIThinking();
+      const modal = document.getElementById('store-modal');
+      if (modal) {
+        modal.hidden = false;
+        modal.removeAttribute('hidden');
+        window.LocalAPI?.getStores?.().then(data => {
+          // Use the app's renderStoreFinder if exposed, else build manually
+          const pins = document.getElementById('store-map-pins');
+          const list = document.getElementById('store-list');
+          if (!pins || !list) return;
+          const stores = data.stores;
+          pins.innerHTML = stores.map(s => `
+            <div class="store-pin ${s.open ? '' : 'closed'}" style="left:${s.x}%;top:${s.y}%;" title="${s.name}">
+              <div class="store-pin__dot"></div>
+              <div class="store-pin__label">${s.name}</div>
+            </div>
+          `).join('');
+          list.innerHTML = stores.map(s => `
+            <div class="store-card">
+              <div class="store-card__info">
+                <div class="store-card__name">${s.name}</div>
+                <div class="store-card__address">${s.address}</div>
+                <div class="store-card__hours">${s.hours}</div>
+              </div>
+              <div class="store-card__meta">
+                <span class="store-card__distance">${s.distance}</span>
+                <span class="store-badge ${s.open ? 'store-badge--open' : 'store-badge--closed'}">${s.open ? 'Open' : 'Closed'}</span>
+                ${s.open ? `<button class="store-card__select-btn">Pick up here</button>` : ''}
+              </div>
+            </div>
+          `).join('');
+        }).catch(() => {});
+      }
+    }, 900);
+  }, 300);
 }
 
 function getMoodInterpretation(moodId) {

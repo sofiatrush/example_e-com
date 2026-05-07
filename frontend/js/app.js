@@ -7,7 +7,7 @@
 
 /* ── Global State ────────────────────────────────────────────── */
 const state = {
-  currentView:        'entry',
+  currentView:        'catalog',
   currentMood:        null,
   currentMoodLabel:   null,
   products:           [],
@@ -839,13 +839,15 @@ function toggleCatalogCompare(id, cardEl) {
 }
 
 function initCatalogEvents() {
-  // Entry → catalog
-  $('entry-catalog-btn')?.addEventListener('click', () => {
-    navigateTo('catalog');
-    if (catalogState.allProducts.length === 0) loadCatalog();
-  });
+  // Logo → catalog (home)
+  // No "back to entry" from catalog — catalog IS home
 
-  $('back-catalog-to-entry')?.addEventListener('click', () => navigateTo('entry'));
+  // "Discover by mood" button → entry screen
+  $('catalog-mood-btn')?.addEventListener('click', () => navigateTo('entry'));
+  // Back from entry → catalog
+  $('back-entry-to-catalog')?.addEventListener('click', () => navigateTo('catalog'));
+  // "Browse all products" button in entry → catalog
+  $('entry-catalog-btn')?.addEventListener('click', () => navigateTo('catalog'));
 
   // Category filters
   $('catalog-filters')?.addEventListener('click', e => {
@@ -955,7 +957,7 @@ function initParticles() {
     });
   }
 
-  const colors = ['139,92,246', '245,158,122', '6,214,199', '240,240,248'];
+  const colors = ['192,40,61', '220,80,80', '244,132,106', '255,255,255'];
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -992,11 +994,11 @@ function initEvents() {
     }
   });
   $('back-wishlist')?.addEventListener('click', () => {
-    const prev = state.catalogReturnView ? 'catalog' : (state.currentMood ? 'explore' : 'entry');
+    const prev = state.currentMood ? 'explore' : 'catalog';
     navigateTo(prev);
   });
-  $('wishlist-go-explore')?.addEventListener('click', () => navigateTo('entry'));
-  $('nav-logo')?.addEventListener('click', () => navigateTo('entry'));
+  $('nav-logo')?.addEventListener('click', () => navigateTo('catalog'));
+  $('wishlist-go-explore')?.addEventListener('click', () => navigateTo('catalog'));
 
   // Load more
   $('load-more-btn')?.addEventListener('click', loadMore);
@@ -1020,13 +1022,10 @@ function initEvents() {
   $('detail-pickup-btn')    ?.addEventListener('click', openStoreFinder);
   $('btn-store-checkout')   ?.addEventListener('click', openStoreFinder);
   $('cart-pickup-btn')      ?.addEventListener('click', openStoreFinder);
+  $('catalog-map-btn')      ?.addEventListener('click', openStoreFinder);
   $('store-close')          ?.addEventListener('click', () => hide($('store-modal')));
 
-  // Checkout (simulated)
-  $('btn-checkout')?.addEventListener('click', () => {
-    showAIThinking('Preparing checkout');
-    setTimeout(() => hideAIThinking(), 2000);
-  });
+  // Checkout → handled by checkout.js (navigates to view-checkout)
 
   // Close modals on backdrop click
   ['compare-modal', 'voice-overlay', 'store-modal'].forEach(id => {
@@ -1051,6 +1050,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initParticles();
   initEvents();
   initCatalogEvents();
+
+  // Load catalog on startup (catalog is the home page)
+  loadCatalog();
 
   // Expose navigate globally for mood.js and voice.js
   window.App = {
