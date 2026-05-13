@@ -64,12 +64,8 @@
 
 [data-mode="classic"] #particle-canvas { display: none; }
 
-/* Discover mode — explicit Fest dark-red nav */
-[data-mode="discover"] .nav {
-  background: rgba(14,4,4,0.85);
-  border-bottom: 1px solid rgba(192,40,61,0.22);
-}
-[data-mode="discover"] body { background: #0e0404; }
+/* Discover mode — inherits global light cream/burgundy theme, no overrides needed */
+/* The :root tokens already define the cream palette as default */
 
 [data-mode="classic"] .entry__title {
   background: linear-gradient(135deg, #111827 0%, #2563eb 55%, #f59e0b 100%);

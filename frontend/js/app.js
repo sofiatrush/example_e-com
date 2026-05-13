@@ -957,7 +957,7 @@ function initParticles() {
     });
   }
 
-  const colors = ['192,40,61', '220,80,80', '244,132,106', '255,255,255'];
+  const colors = ['109,41,50', '86,28,36', '155,68,85', '199,183,163'];
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
