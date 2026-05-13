@@ -86,7 +86,7 @@ function initModeSwitcher() {
   // Font size toggle — cycles normal → large → xl → normal
   $('font-size-toggle')?.addEventListener('click', () => {
     const cycle = { normal: 'large', large: 'xl', xl: 'normal' };
-    const labels = { normal: 'A', large: 'A+', xl: 'A↑↑' };
+    const labels = { normal: 'A', large: 'A·', xl: 'A··' };
     state.textSize = cycle[state.textSize] || 'normal';
     document.body.setAttribute('data-text-size', state.textSize);
     const lbl = $('font-size-label');
