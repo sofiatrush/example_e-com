@@ -8,7 +8,16 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'frontend')));
+// HTML: never cache so version-stamped CSS/JS always load fresh
+app.use(express.static(path.join(__dirname, 'frontend'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 const products = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'products.json')));
 
