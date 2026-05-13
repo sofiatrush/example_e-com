@@ -249,7 +249,7 @@ ul { list-style: none; }
   font-family: 'DM Serif Display', serif;
   font-size: clamp(36px, 5vw, 56px);
   line-height: 1.1;
-  background: linear-gradient(135deg, #ffffff 0%, #f4a1a1 50%, #c0283d 100%);
+  background: linear-gradient(135deg, #561C24 0%, #6D2932 40%, #9B4455 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 14px;
@@ -2763,9 +2763,16 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   /* Ask AI FAB */
   .ask-ai-fab { bottom: 16px; right: 16px; padding: 11px 18px; font-size: 13px; }
 
-  /* Mood map */
-  .mood-map { height: 360px; max-width: 320px; }
+  /* Entry view */
+  #view-entry { padding: 20px 16px 32px; justify-content: flex-start; }
+  .entry__headline { margin-bottom: 28px; }
   .entry__title { font-size: 32px; }
+  .entry__subtitle { font-size: 14px; }
+  .entry__footer { margin-top: 24px; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .entry__back-row { margin-bottom: 12px; }
+
+  /* Mood map */
+  .mood-map { height: 280px; max-width: 100%; }
 }
 
 /* ── Small phones (≤ 420px) ──────────────────────────────── */
@@ -2777,6 +2784,8 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   .product-card .card-gradient { height: 160px; }
   .compare-products { grid-template-columns: 1fr; }
   .nav__logo-text { font-size: 16px; }
-  .entry__title { font-size: 26px; }
-  .mood-map { height: 300px; }
+  .entry__title { font-size: 24px; }
+  .mood-map { height: 240px; }
+  .entry__footer { flex-direction: column; align-items: center; }
+  .entry__voice-shortcut, .entry__catalog-btn { width: 100%; justify-content: center; }
 }
