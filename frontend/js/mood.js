@@ -14,6 +14,8 @@ const MOODS = [
     glow:    'rgba(240,93,122,0.45)',
     size:    180,
     pos:     { left: '5%',  top: '8%' },
+    mobileSize: 82,
+    mobilePos:  { left: '3%', top: '3%' },
     float:   { dur: '7.2s', delay: '0s' },
   },
   {
@@ -24,6 +26,8 @@ const MOODS = [
     glow:    'rgba(79,172,254,0.40)',
     size:    160,
     pos:     { right: '6%', top: '4%' },
+    mobileSize: 76,
+    mobilePos:  { right: '3%', top: '3%' },
     float:   { dur: '8.5s', delay: '1.2s' },
   },
   {
@@ -34,6 +38,8 @@ const MOODS = [
     glow:    'rgba(161,140,209,0.45)',
     size:    200,
     pos:     { left: '50%', top: '50%', transform: 'translate(-50%,-50%)' },
+    mobileSize: 86,
+    mobilePos:  { left: '50%', top: '42%', transform: 'translate(-50%,-50%)' },
     float:   { dur: '9.0s', delay: '0.5s' },
   },
   {
@@ -44,6 +50,8 @@ const MOODS = [
     glow:    'rgba(247,151,30,0.40)',
     size:    170,
     pos:     { left: '8%', bottom: '6%' },
+    mobileSize: 80,
+    mobilePos:  { left: '3%', top: '42%' },
     float:   { dur: '7.8s', delay: '2.0s' },
   },
   {
@@ -54,6 +62,8 @@ const MOODS = [
     glow:    'rgba(56,239,125,0.40)',
     size:    155,
     pos:     { right: '4%', bottom: '10%' },
+    mobileSize: 80,
+    mobilePos:  { right: '3%', top: '42%' },
     float:   { dur: '6.8s', delay: '1.7s' },
   },
   {
@@ -64,6 +74,8 @@ const MOODS = [
     glow:    'rgba(118,75,162,0.40)',
     size:    162,
     pos:     { right: '28%', top: '12%' },
+    mobileSize: 76,
+    mobilePos:  { left: '50%', top: '3%', transform: 'translateX(-50%)' },
     float:   { dur: '8.2s', delay: '3.0s' },
   },
   {
@@ -74,8 +86,10 @@ const MOODS = [
     glow:    'rgba(233,69,96,0.55)',
     size:    148,
     pos:     { left: '30%', bottom: '4%' },
+    mobileSize: 72,
+    mobilePos:  { left: '50%', bottom: '3%', transform: 'translateX(-50%)' },
     float:   { dur: '6.5s', delay: '0.8s' },
-    action:  'store-map',  // special: opens map instead of explore
+    action:  'store-map',
   },
 ];
 
@@ -88,12 +102,16 @@ function buildOrb(mood) {
   el.setAttribute('role', 'listitem');
   el.setAttribute('aria-label', `Select mood: ${mood.label}`);
 
+  const isMobile = window.innerWidth <= 768;
+  const size = isMobile ? (mood.mobileSize || mood.size) : mood.size;
+  const pos  = isMobile ? (mood.mobilePos  || mood.pos)  : mood.pos;
+
   // Size
-  el.style.width  = `${mood.size}px`;
-  el.style.height = `${mood.size}px`;
+  el.style.width  = `${size}px`;
+  el.style.height = `${size}px`;
 
   // Position
-  Object.entries(mood.pos).forEach(([k, v]) => { el.style[k] = v; });
+  Object.entries(pos).forEach(([k, v]) => { el.style[k] = v; });
 
   // Visual
   el.style.background = mood.gradient;
@@ -159,16 +177,22 @@ function onMoodSelect(mood, el) {
     });
     // Reset the orb after transition
     setTimeout(() => {
+      const isMob = window.innerWidth <= 768;
+      const resetSize = isMob ? (mood.mobileSize || mood.size) : mood.size;
+      const resetPos  = isMob ? (mood.mobilePos  || mood.pos)  : mood.pos;
       el.style.transition = '';
       el.style.position   = '';
       el.style.left       = '';
       el.style.top        = '';
-      el.style.width      = `${mood.size}px`;
-      el.style.height     = `${mood.size}px`;
-      el.style.transform  = mood.pos.transform || '';
+      el.style.right      = '';
+      el.style.bottom     = '';
+      el.style.width      = `${resetSize}px`;
+      el.style.height     = `${resetSize}px`;
+      el.style.transform  = resetPos.transform || '';
       el.style.borderRadius = '';
       el.style.zIndex     = '';
       el.style.opacity    = '';
+      Object.entries(resetPos).forEach(([k, v]) => { el.style[k] = v; });
       currentExpanding = null;
     }, 700);
   }, 500);

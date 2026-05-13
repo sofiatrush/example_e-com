@@ -2682,10 +2682,9 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   .nav__actions { gap: 3px; }
   #contrast-toggle { display: none; }
 
-  /* Mood orbs — scale down to fit small screen */
-  .mood-orb { transform: scale(0.62) !important; transform-origin: center center; }
-  .mood-orb:hover { transform: scale(0.68) !important; }
-  .mood-orb:active { transform: scale(0.60) !important; }
+  /* Mood orbs — JS sets mobile sizes/positions directly */
+  .mood-orb { transform: none !important; }
+  .mood-orb:active { transform: scale(0.96) !important; }
 
   /* Font size + large-text 1-column catalog */
   body[data-text-size="large"] .catalog-grid,
@@ -2705,9 +2704,10 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   .entry__title { font-size: clamp(24px, 7vw, 34px); }
   .entry__subtitle { font-size: 14px; }
   .entry__footer { margin-top: 20px; flex-wrap: wrap; justify-content: center; gap: 10px; }
-  .mood-map { height: 260px; max-width: 100%; }
+  .mood-map { height: 340px; max-width: 100%; }
 
   /* Catalog */
+  #view-catalog { padding-top: 0; padding-bottom: 80px; }
   .catalog-shell { padding: 14px 12px 80px; }
   .catalog-head__top { flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
   .catalog-head__title-wrap { order: 0; width: 100%; }
@@ -2835,9 +2835,7 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   .entry__title { font-size: clamp(20px, 8vw, 26px); }
   .entry__footer { flex-direction: column; align-items: stretch; }
   .entry__voice-shortcut, .entry__catalog-btn { width: 100%; justify-content: center; min-height: 44px; }
-  .mood-map { height: 220px; }
-  .mood-orb { transform: scale(0.52) !important; }
-  .mood-orb:hover { transform: scale(0.58) !important; }
+  .mood-map { height: 300px; }
 
   /* Catalog */
   .catalog-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
