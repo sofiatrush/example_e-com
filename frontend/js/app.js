@@ -54,7 +54,16 @@ function savings(price, original) {
 function navigateTo(viewId, data = {}) {
   const prev = document.querySelector('.view--active');
   const next = document.querySelector(`[data-view="${viewId}"]`);
-  if (!next || prev === next) return;
+  if (!next) return;
+
+  // Same view (e.g. comp-card → another product): just reload content
+  if (prev === next) {
+    if (viewId === 'product' && data.productId) {
+      loadProductDetail(data.productId);
+      next.scrollTop = 0;
+    }
+    return;
+  }
 
   if (prev) {
     prev.classList.add('view--exit');

@@ -211,6 +211,8 @@
   gap: 16px;
 }
 [data-mode="focus"] .card-gradient { width: 100px; min-height: 100%; flex-shrink: 0; }
+[data-mode="focus"] .card-body { min-width: 0; overflow: hidden; }
+[data-mode="focus"] .card-name { word-break: break-word; overflow-wrap: break-word; }
 [data-mode="focus"] .card-ai-hints { display: none; }
 [data-mode="focus"] .card-quick-add { display: none; }
 
@@ -420,4 +422,23 @@ body {
 }
 @media (max-width: 480px) {
   .catalog-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+
+/* Focus mode on mobile: smaller orbs in the vertical list, tighter card text */
+@media (max-width: 768px) {
+  [data-mode="focus"] .mood-orb { width: 72px !important; height: 72px !important; }
+  [data-mode="focus"] .mood-map { gap: 8px; }
+  [data-mode="focus"] .mood-orb__emoji { font-size: 16px; }
+  [data-mode="focus"] .mood-orb__label { font-size: 10px; max-width: 60px; }
+
+  [data-mode="focus"] .product-card { flex-direction: row; }
+  [data-mode="focus"] .card-gradient { width: 90px; }
+  [data-mode="focus"] .card-name { font-size: 15px; }
+  [data-mode="focus"] .card-tagline { font-size: 12px; }
+  [data-mode="focus"] .card-price { font-size: 17px; }
+
+  [data-mode="focus"] .cat-card { flex-direction: row; }
+  [data-mode="focus"] .cat-card__img { width: 90px; }
+  [data-mode="focus"] .cat-card__name { font-size: 13px; }
+  [data-mode="focus"] .cat-card__price { font-size: 15px; }
 }

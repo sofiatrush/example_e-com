@@ -2693,8 +2693,7 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   .nav__actions { gap: 3px; }
   #contrast-toggle { display: none; }
 
-  /* Mood orbs — JS sets mobile sizes/positions directly */
-  .mood-orb { transform: none !important; }
+  /* Mood orbs — JS sets sizes/positions; only keep active state */
   .mood-orb:active { transform: scale(0.96) !important; }
 
   /* Font size + large-text 1-column catalog */
