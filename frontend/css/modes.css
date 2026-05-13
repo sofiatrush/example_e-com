@@ -392,6 +392,9 @@ body {
 /* Hide compare checkbox — too cramped in narrow image column */
 [data-mode="focus"] .cat-card__check { display: none; }
 [data-mode="focus"] .card-compare-check { display: none; }
+/* Stack badges vertically so they don't overlap in the narrow 110px image column */
+[data-mode="focus"] .cat-card__badge { top: 8px; left: 8px; right: auto; }
+[data-mode="focus"] .cat-card__discount { top: 30px; left: 8px; right: auto; }
 [data-mode="focus"] .cat-card:hover {
   transform: none;
   border-color: rgba(217,119,6,0.30);
