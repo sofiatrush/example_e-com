@@ -397,6 +397,8 @@ body {
 /* Stack badges vertically so they don't overlap in the narrow 110px image column */
 [data-mode="focus"] .cat-card__badge { top: 8px; left: 8px; right: auto; }
 [data-mode="focus"] .cat-card__discount { top: 30px; left: 8px; right: auto; }
+/* Heart button moves to bottom-right so it never overlaps the left-side badges */
+[data-mode="focus"] .cat-card .heart-btn { bottom: 8px; left: auto; right: 8px; }
 [data-mode="focus"] .cat-card:hover {
   transform: none;
   border-color: rgba(217,119,6,0.30);

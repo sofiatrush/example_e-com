@@ -2887,7 +2887,7 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   .product-grid { grid-template-columns: 1fr; }
   .product-card .card-gradient { height: 180px; }
   .entry__title { font-size: 20px; }
-  .mood-map { height: 200px; }
+  .mood-map { height: 300px; }
 }
 
 /* ── Landscape phones ────────────────────────────────────── */
