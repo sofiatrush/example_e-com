@@ -1806,8 +1806,8 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
 .catalog-map-btn {
   display: flex; align-items: center; gap: 8px;
   padding: 9px 18px;
-  background: var(--c-purple-lo);
-  border: 1px solid var(--c-purple-gl);
+  background: var(--c-purple);
+  border: 1px solid var(--c-purple);
   border-radius: var(--radius-md);
   font-family: inherit; font-size: 13px; font-weight: 500;
   color: #fff;
@@ -1817,9 +1817,9 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
   flex-shrink: 0;
 }
 .catalog-map-btn:hover {
-  background: var(--c-purple);
-  border-color: var(--c-purple);
-  box-shadow: 0 0 20px var(--c-purple-lo);
+  background: #561C24;
+  border-color: #561C24;
+  box-shadow: 0 4px 16px rgba(109,41,50,0.35);
   transform: translateY(-1px);
 }
 .catalog-map-btn svg { flex-shrink: 0; }
@@ -1828,21 +1828,20 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
 .catalog-mood-btn {
   display: flex; align-items: center; gap: 8px;
   padding: 9px 18px;
-  background: linear-gradient(135deg, rgba(192,40,61,0.18), rgba(192,40,61,0.08));
-  border: 1px solid rgba(192,40,61,0.35);
+  background: var(--c-purple);
+  border: 1px solid var(--c-purple);
   border-radius: var(--radius-md);
   font-family: inherit; font-size: 13px; font-weight: 500;
-  color: #f4a1a1;
+  color: #fff;
   cursor: pointer;
   transition: all var(--t-fast) ease;
   white-space: nowrap;
   flex-shrink: 0;
 }
 .catalog-mood-btn:hover {
-  background: linear-gradient(135deg, rgba(192,40,61,0.35), rgba(192,40,61,0.18));
-  border-color: rgba(192,40,61,0.7);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(192,40,61,0.25);
+  background: #561C24;
+  border-color: #561C24;
+  box-shadow: 0 4px 16px rgba(109,41,50,0.35);
   transform: translateY(-1px);
 }
 .catalog-mood-btn__icon {
@@ -1853,7 +1852,7 @@ body[data-text-size="xl"] .catalog-grid      { grid-template-columns: repeat(3, 
 /* Entry back row — positioned at top of mood screen */
 .entry__back-row {
   position: absolute;
-  top: calc(var(--nav-h) + 20px);
+  top: 20px;
   left: 40px;
   z-index: 5;
   animation: fade-up 0.5s var(--ease-out) both;
